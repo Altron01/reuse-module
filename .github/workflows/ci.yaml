@@ -10,7 +10,6 @@ on:
       azure_keyvault_url:
         required: true
         type: string
-
       azure_subscription_id:
         required: true
         type: string
@@ -20,15 +19,15 @@ on:
       azure_datafactory_name:
         required: true
         type: string
+    secrets:
       personal_access_token:
         required: true
-        type: string
       azure_client_id:
         required: true
-        type: string
       azure_tenant_id:
         required: true
-        type: string
+      azure_subscription_id:
+        required: true
     
 jobs:
   ci:
