@@ -20,15 +20,15 @@ on:
       azure_datafactory_name:
         required: true
         type: string
-    secrets:
       personal_access_token:
         required: true
+        type: string
       azure_client_id:
         required: true
+        type: string
       azure_tenant_id:
         required: true
-      azure_subscription_id:
-        required: true
+        type: string
     
 jobs:
   ci:
@@ -38,16 +38,16 @@ jobs:
         with:
           repository: '${{ inputs.repository }}'
           ref: '${{ inputs.ref }}'
-          token: '${{ secrets.personal_access_token }}'
+          token: '${{ inputs.personal_access_token }}'
       - uses: actions/checkout@v4
         with:
           path: 'template'
       - name: Azure login
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.azure_client_id }}
-          tenant-id: ${{ secrets.azure_tenant_id }}
-          subscription-id: ${{ secrets.azure_subscription_id }}
+          client-id: ${{ inputs.azure_client_id }}
+          tenant-id: ${{ inputs.azure_tenant_id }}
+          subscription-id: ${{ inputs.azure_subscription_id }}
       - name: Azure CLI script
         uses: azure/cli@v2
         with:
