@@ -1,0 +1,82 @@
+on:
+  workflow_call:
+    inputs:
+      repository:
+        required: true
+        type: string
+      ref:
+        required: true
+        type: string
+      azure_keyvault_url:
+        required: string
+        type: string
+
+      azure_subscription_id:
+        required: true
+        type: string
+      azure_resource_group:
+        required: true
+        type: string
+      azure_datafactory_name:
+        required: true
+        type: string
+    secrets:
+      personal_access_token:
+        required: true
+      azure_client_id:
+        required: true
+        type: string
+      azure_tenant_id:
+        required: true
+        type: string
+      azure_subscription_id:
+        required: true
+        type: string
+    
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: '${{ inputs.repository }}'
+          ref: '${{ inputs.ref }}'
+          token: '${{ secrets.personal_access_token }}'
+      - uses: actions/checkout@v4
+        with:
+          path: 'template'
+      - name: Azure login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.azure_client_id }}
+          tenant-id: ${{ secrets.azure_tenant_id }}
+          subscription-id: ${{ secrets.azure_subscription_id }}
+      - name: Azure CLI script
+        uses: azure/cli@v2
+        with:
+          azcliversion: latest
+          inlineScript: |
+            pip install azure-keyvault-secrets azure-identity
+            export $VAULT_URL="${{ inputs.azure_keyvault_id }}"
+            python template/.github/scripts/replace_envvar.py
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v4.2.0
+        with:
+          node-version: 18.x
+      - name: Install ADF Utilities packages
+        run: |
+          npm install
+      - name: Validate
+        run: npm run build validate ${{github.workspace}}/factoryData /subscriptions/${{ inputs.azure_subscription_id }}/resourceGroups/${{ inputs.azure_resource_group }}/providers/Microsoft.DataFactory/factories/${{ inputs.azure_datafactory_name }} # (2) The validate command needs the root folder location of your repository where all the objects are stored. And the 2nd parameter is the resourceID of the ADF instance working-directory: ${{github.workspace}}/ADFroot
+      - name: Validate and Generate ARM template
+        run: npm run build export ${{github.workspace}}/factoryData/build /subscriptions/${{ inputs.azure_subscription_id }}/resourceGroups/${{ inputs.azure_resource_group }}/providers/Microsoft.DataFactory/factories/${{ inputs.azure_datafactory_name }} "ExportedArmTemplate" # (3) The build command, as validate, needs the root folder location of your repository where all the objects are stored. And the 2nd parameter is the resourceID of the ADF instance. The 3rd parameter is the exported ARM template artifact
+      - run: ls ${{github.workspace}}/factoryData/build
+      #- name: Download a single artifact
+      #  uses: actions/download-artifact@v4
+      #  with:
+      #    name: my-artifact # In order to leverage the artifact in another job, we need to upload it with the upload action
+      #- name: upload artifact
+      #  uses: actions/upload-artifact@v3
+      #  with:
+      #    name: ExportedArmTemplate # (4) use the same artifact name you used in the previous export step
+      #    path: ${{github.workspace}}/ADFroot/build/ExportedArmTemplate
