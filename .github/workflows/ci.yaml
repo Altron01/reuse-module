@@ -8,7 +8,7 @@ on:
         required: true
         type: string
       azure_keyvault_url:
-        required: string
+        required: true
         type: string
 
       azure_subscription_id:
