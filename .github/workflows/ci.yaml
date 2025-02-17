@@ -25,13 +25,10 @@ on:
         required: true
       azure_client_id:
         required: true
-        type: string
       azure_tenant_id:
         required: true
-        type: string
       azure_subscription_id:
         required: true
-        type: string
     
 jobs:
   ci:
