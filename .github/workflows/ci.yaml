@@ -1,19 +1,25 @@
 on:
   workflow_call:
     inputs:
-      repository:
-        required: true
-        type: string
       ref:
         required: true
         type: string
+        
       azure_keyvault_url:
         required: true
         type: string
-      azure_resource_group:
+        
+      source_azure_resource_group:
         required: true
         type: string
-      azure_datafactory_name:
+      source_azure_datafactory_name:
+        required: true
+        type: string
+        
+      target_azure_resource_group:
+        required: true
+        type: string
+      target_azure_datafactory_name:
         required: true
         type: string
     secrets:
@@ -25,6 +31,12 @@ on:
         required: true
       azure_subscription_id:
         required: true
+        
+      source_azure_subscription_id:
+        required: true
+        
+      target_azure_subscription_id:
+        required: true
     
 jobs:
   ci:
@@ -32,6 +44,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: '${{ inputs.ref }}'
           token: '${{ secrets.personal_access_token }}'
       - uses: actions/checkout@v4
         with:
@@ -60,9 +73,9 @@ jobs:
         run: |
           npm install
       - name: Validate
-        run: npm run build validate ${{github.workspace}}/factoryData /subscriptions/${{ secrets.azure_subscription_id }}/resourceGroups/${{ inputs.azure_resource_group }}/providers/Microsoft.DataFactory/factories/${{ inputs.azure_datafactory_name }} # (2) The validate command needs the root folder location of your repository where all the objects are stored. And the 2nd parameter is the resourceID of the ADF instance working-directory: ${{github.workspace}}/ADFroot
+        run: npm run build validate ${{github.workspace}}/factoryData /subscriptions/${{ secrets.source_azure_subscription_id }}/resourceGroups/${{ inputs.source_azure_resource_group }}/providers/Microsoft.DataFactory/factories/${{ inputs.source_azure_datafactory_name }} # (2) The validate command needs the root folder location of your repository where all the objects are stored. And the 2nd parameter is the resourceID of the ADF instance working-directory: ${{github.workspace}}/ADFroot
       - name: Validate and Generate ARM template
-        run: npm run build export ${{github.workspace}}/factoryData/build /subscriptions/${{ secrets.azure_subscription_id }}/resourceGroups/${{ inputs.azure_resource_group }}/providers/Microsoft.DataFactory/factories/${{ inputs.azure_datafactory_name }} "ExportedArmTemplate" # (3) The build command, as validate, needs the root folder location of your repository where all the objects are stored. And the 2nd parameter is the resourceID of the ADF instance. The 3rd parameter is the exported ARM template artifact
+        run: npm run build export ${{github.workspace}}/factoryData /subscriptions/${{ secrets.source_azure_subscription_id }}/resourceGroups/${{ inputs.source_azure_resource_group }}/providers/Microsoft.DataFactory/factories/${{ inputs.source_azure_datafactory_name }} build "ExportedArmTemplate" # (3) The build command, as validate, needs the root folder location of your repository where all the objects are stored. And the 2nd parameter is the resourceID of the ADF instance. The 3rd parameter is the exported ARM template artifact
       - run: ls ${{github.workspace}}/factoryData/build
       #- name: Download a single artifact
       #  uses: actions/download-artifact@v4
@@ -73,3 +86,12 @@ jobs:
       #  with:
       #    name: ExportedArmTemplate # (4) use the same artifact name you used in the previous export step
       #    path: ${{github.workspace}}/ADFroot/build/ExportedArmTemplate
+      - name: Deploy resources
+        uses: Azure/data-factory-deploy-action@v1.2.0
+        with:
+          resourceGroupName: ${{ inputs.target_azure_resource_group }}
+          dataFactoryName: ${{ target_azure_datafactory_name }}
+          armTemplateFile: ARMTemplateForFactory.json
+          # armTemplateParametersFile: myArmTemplateParameters.json [optional]
+          # additionalParameters: 'key1=value key2=value keyN=value' [optional]
+          # skipAzModuleInstallation: true [optional]
