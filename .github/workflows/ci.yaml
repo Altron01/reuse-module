@@ -73,10 +73,10 @@ jobs:
         run: |
           npm install
       - name: Validate
-        run: npm run build validate ${{github.workspace}}/factoryData /subscriptions/${{ secrets.source_azure_subscription_id }}/resourceGroups/${{ inputs.source_azure_resource_group }}/providers/Microsoft.DataFactory/factories/${{ inputs.source_azure_datafactory_name }} # (2) The validate command needs the root folder location of your repository where all the objects are stored. And the 2nd parameter is the resourceID of the ADF instance working-directory: ${{github.workspace}}/ADFroot
+        run: npm run build validate ${{github.workspace}}/factoryData /subscriptions/${{ secrets.source_azure_subscription_id }}/resourceGroups/${{ inputs.source_azure_resource_group }}/providers/Microsoft.DataFactory/factories/${{ inputs.source_azure_datafactory_name }}
       - name: Validate and Generate ARM template
-        run: npm run build export ${{github.workspace}}/factoryData /subscriptions/${{ secrets.source_azure_subscription_id }}/resourceGroups/${{ inputs.source_azure_resource_group }}/providers/Microsoft.DataFactory/factories/${{ inputs.source_azure_datafactory_name }} build "ExportedArmTemplate" # (3) The build command, as validate, needs the root folder location of your repository where all the objects are stored. And the 2nd parameter is the resourceID of the ADF instance. The 3rd parameter is the exported ARM template artifact
-      - run: ls ${{github.workspace}}/factoryData/build
+        run: npm run build export ${{github.workspace}}/factoryData /subscriptions/${{ secrets.source_azure_subscription_id }}/resourceGroups/${{ inputs.source_azure_resource_group }}/providers/Microsoft.DataFactory/factories/${{ inputs.source_azure_datafactory_name }} build "ExportedArmTemplate"
+      - run: ls ${{github.workspace}}/factoryData/ExportedArmTemplate
       #- name: Download a single artifact
       #  uses: actions/download-artifact@v4
       #  with:
