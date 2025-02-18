@@ -61,6 +61,7 @@ jobs:
           client-id: ${{ secrets.azure_client_id }}
           tenant-id: ${{ secrets.azure_tenant_id }}
           subscription-id: ${{ secrets.azure_subscription_id }}
+          enable-AzPSSession: true
       - run: |
           pip install azure-keyvault-secrets azure-identity
           export VAULT_URL='${{ inputs.azure_keyvault_url }}'
