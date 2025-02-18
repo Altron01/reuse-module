@@ -49,7 +49,7 @@ jobs:
           subscription-id: ${{ secrets.azure_subscription_id }}
       - run: |
           pip install azure-keyvault-secrets azure-identity
-          export $VAULT_URL="${{ inputs.azure_keyvault_url }}"
+          export VAULT_URL='${{ inputs.azure_keyvault_url }}'
           python template/.github/scripts/replace_envvar.py
       - name: Setup Node.js environment
         uses: actions/setup-node@v4.2.0
