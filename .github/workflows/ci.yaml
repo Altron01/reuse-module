@@ -32,12 +32,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          repository: '${{ inputs.repository }}'
-          ref: '${{ inputs.ref }}'
           token: '${{ secrets.personal_access_token }}'
       - uses: actions/checkout@v4
         with:
           path: 'template'
+          repository: Altron01/reuse-module
+          ref: main
+          token: '${{ secrets.personal_access_token }}'
       - uses: actions/setup-python@v5
         with:
           python-version: '3.13' 
