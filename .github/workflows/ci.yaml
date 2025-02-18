@@ -76,7 +76,7 @@ jobs:
         run: npm run build validate ${{github.workspace}}/factoryData /subscriptions/${{ secrets.source_azure_subscription_id }}/resourceGroups/${{ inputs.source_azure_resource_group }}/providers/Microsoft.DataFactory/factories/${{ inputs.source_azure_datafactory_name }}
       - name: Validate and Generate ARM template
         run: npm run build export ${{github.workspace}}/factoryData /subscriptions/${{ secrets.source_azure_subscription_id }}/resourceGroups/${{ inputs.source_azure_resource_group }}/providers/Microsoft.DataFactory/factories/${{ inputs.source_azure_datafactory_name }} build "ExportedArmTemplate"
-      - run: ls ${{github.workspace}}/factoryData/ExportedArmTemplate
+      - run: ls ${{github.workspace}}/factoryData
       #- name: Download a single artifact
       #  uses: actions/download-artifact@v4
       #  with:
