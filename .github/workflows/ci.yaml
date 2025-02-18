@@ -76,7 +76,7 @@ jobs:
         run: npm run build validate ${{github.workspace}}/factoryData /subscriptions/${{ secrets.source_azure_subscription_id }}/resourceGroups/${{ inputs.source_azure_resource_group }}/providers/Microsoft.DataFactory/factories/${{ inputs.source_azure_datafactory_name }}
       - name: Validate and Generate ARM template
         run: npm run build export ${{github.workspace}}/factoryData /subscriptions/${{ secrets.source_azure_subscription_id }}/resourceGroups/${{ inputs.source_azure_resource_group }}/providers/Microsoft.DataFactory/factories/${{ inputs.source_azure_datafactory_name }} build "ExportedArmTemplate"
-      - run: ls ${{github.workspace}}/factoryData
+      - run: ls ${{github.workspace}}/build
       #- name: Download a single artifact
       #  uses: actions/download-artifact@v4
       #  with:
@@ -91,7 +91,7 @@ jobs:
         with:
           resourceGroupName: ${{ inputs.target_azure_resource_group }}
           dataFactoryName: ${{ inputs.target_azure_datafactory_name }}
-          armTemplateFile: ARMTemplateForFactory.json
+          armTemplateFile: ${{github.workspace}}/build/ARMTemplateForFactory.json
           # armTemplateParametersFile: myArmTemplateParameters.json [optional]
           # additionalParameters: 'key1=value key2=value keyN=value' [optional]
           # skipAzModuleInstallation: true [optional]
