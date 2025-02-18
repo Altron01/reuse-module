@@ -90,7 +90,7 @@ jobs:
         uses: Azure/data-factory-deploy-action@v1.2.0
         with:
           resourceGroupName: ${{ inputs.target_azure_resource_group }}
-          dataFactoryName: ${{ target_azure_datafactory_name }}
+          dataFactoryName: ${{ inputs.target_azure_datafactory_name }}
           armTemplateFile: ARMTemplateForFactory.json
           # armTemplateParametersFile: myArmTemplateParameters.json [optional]
           # additionalParameters: 'key1=value key2=value keyN=value' [optional]
