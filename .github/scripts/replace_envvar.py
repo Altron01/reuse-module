@@ -22,11 +22,12 @@ client = SecretClient(vault_url=VAULT_URL, credential=credential)
 master_list = list(pathlib.Path(destination_root).glob(pattern))
 for file in master_list:
   txt = readFile(str(file.absolute()))
-  match_list = re.findall(r'@{([a-z|A-Z|\\(|\\)|\\.]*)}', txt)
+  match_list = re.findall(r'@{([a-z|A-Z|\\(|\\)|\\.|_]*)}', txt)
   if len(match_list) == 0:
     continue
 
   for match in match_list:
+    print("Replacing secret: " + match)
     txt = txt.replace("@{" + match + "}", client.get_secret(match.split(".")[1]).value)
 
   f = open(str(file.absolute()), "w")
