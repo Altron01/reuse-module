@@ -47,14 +47,10 @@ jobs:
           client-id: ${{ secrets.azure_client_id }}
           tenant-id: ${{ secrets.azure_tenant_id }}
           subscription-id: ${{ secrets.azure_subscription_id }}
-      - name: Azure CLI script
-        uses: azure/cli@v2
-        with:
-          azcliversion: latest
-          inlineScript: |
-            pip install azure-keyvault-secrets azure-identity
-            export $VAULT_URL="${{ inputs.azure_keyvault_id }}"
-            python template/.github/scripts/replace_envvar.py
+      - run: |
+          pip install azure-keyvault-secrets azure-identity
+          export $VAULT_URL="${{ inputs.azure_keyvault_url }}"
+          python template/.github/scripts/replace_envvar.py
       - name: Setup Node.js environment
         uses: actions/setup-node@v4.2.0
         with:
