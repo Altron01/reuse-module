@@ -93,6 +93,6 @@ jobs:
           resourceGroupName: ${{ inputs.target_azure_resource_group }}
           dataFactoryName: ${{ inputs.target_azure_datafactory_name }}
           armTemplateFile: ${{github.workspace}}/build/ARMTemplateForFactory.json
-          armTemplateParametersFile: ${{github.workspace}}/build/ARMTemplateParametersForFactory
+          armTemplateParametersFile: ${{github.workspace}}/build/ARMTemplateParametersForFactory.json
           # additionalParameters: 'key1=value key2=value keyN=value' [optional]
           # skipAzModuleInstallation: true [optional]
